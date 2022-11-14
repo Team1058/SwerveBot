@@ -35,7 +35,6 @@ public class SwerveModule {
 		angleMotor.config_kP(kPIDLoopIdx, P, 0);
 		angleMotor.config_kI(kPIDLoopIdx, I, 0);
 		angleMotor.config_kD(kPIDLoopIdx, D, 0);
-    
     }
     public double getAngle() {
         return angleMotor.getSelectedSensorPosition();
