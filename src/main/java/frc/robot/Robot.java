@@ -44,6 +44,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     driveTrain.printAngles();
+    driveTrain.printPowerConsumption();
+    driveTrain.printTemp();
   }
 
   /**

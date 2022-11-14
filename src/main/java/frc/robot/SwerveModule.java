@@ -40,5 +40,10 @@ public class SwerveModule {
     public double getAngle() {
         return angleMotor.getSelectedSensorPosition();
     }
-    
+    public double getAnglePowerOutput() {
+        return angleMotor.getStatorCurrent();
+    }
+    public double getDriveTemp() { 
+        return speedMotor.getTemperature();
+    }
 }
