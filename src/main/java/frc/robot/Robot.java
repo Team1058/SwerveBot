@@ -86,9 +86,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double rightstickx=driverController.getRightX();
-    double leftstickx=driverController.getLeftX();
-    double leftsticky=driverController.getLeftY();
+    double rightstickx = -driverController.getRightX();
+    double leftstickx = -driverController.getLeftX();
+    double leftsticky = -driverController.getLeftY();
     driveTrain.drive(leftstickx, leftsticky, rightstickx);
   }
 

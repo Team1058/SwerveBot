@@ -14,27 +14,26 @@ public class DriveTrain {
     public final double L = 21.5;
     public final double W = 21.5;
     public DriveTrain(){
-        frontLeft = new SwerveModule(0, 1, frontLeftStartPoint);
-        frontRight = new SwerveModule(2, 3, frontRightStartPoint);
-        backLeft = new SwerveModule(4, 5, backLeftStartPoint);
-        backRight = new SwerveModule(6, 7, backRightStartPoint);
+        frontLeft = new SwerveModule(0, 1, frontLeftStartPoint, true);
+        frontRight = new SwerveModule(2, 3, frontRightStartPoint, false);
+        backLeft = new SwerveModule(4, 5, backLeftStartPoint, true);
+        backRight = new SwerveModule(6, 7, backRightStartPoint, false);
     }
     public void drive (double x1, double y1, double x2) {
-        if (x1<.1){
+        if (Math.abs(x1)<.1){
             x1 = 0;
             
         }
-        if (y1<.1){
+        if (Math.abs(y1)<.1){
             y1 = 0;
             
         }
-        if (x2<.1){
+        if (Math.abs(x2)<.1){
             x2 = 0;
             
         }
 
         double r = Math.sqrt ((L * L) + (W * W));
-        y1 *= -1;
 
         double a = x1 - x2 * (L / r);
         double b = x1 + x2 * (L / r); 
@@ -46,26 +45,15 @@ public class DriveTrain {
         double frontRightSpeed = Math.sqrt ((b * b) + (d * d));
         double frontLeftSpeed = Math.sqrt ((b * b) + (c * c));
 
-        double backRightAngle = Math.atan2 (a, d) / Math.PI;
-        double backLeftAngle = Math.atan2 (a, c) / Math.PI;
-        double frontRightAngle = Math.atan2 (b, d) / Math.PI;
-        double frontLeftAngle = Math.atan2 (b, c) / Math.PI;
+        double backRightAngle = Math.atan2 (a, d);
+        double backLeftAngle = Math.atan2 (a, c);
+        double frontRightAngle = Math.atan2 (b, d);
+        double frontLeftAngle = Math.atan2 (b, c);
  
-        frontLeft.setSpeed(frontLeftSpeed);
-        frontRight.setSpeed(frontRightSpeed);
-        backLeft.setSpeed(backLeftSpeed);
-        backRight.setSpeed(backRightSpeed);
-
-        if (x1 != 0 || x2 != 0 || y1 != 0) {
-            frontLeft.setAngle(frontLeftAngle);
-            frontRight.setAngle(frontRightAngle);
-            backLeft.setAngle(backLeftAngle);
-            backRight.setAngle(backRightAngle);
-            SmartDashboard.putNumber("backLeftAngleSet", backLeftAngle);
-            SmartDashboard.putNumber("backRightAngleSet", backRightAngle);
-            SmartDashboard.putNumber("frontLeftAngleSet", frontLeftAngle);
-            SmartDashboard.putNumber("frontRightAngleSet", frontRightAngle);
-        }
+        frontRight.setAngleAndSpeed(frontRightAngle, frontRightSpeed);
+        frontLeft.setAngleAndSpeed(frontLeftAngle, frontLeftSpeed);
+        backRight.setAngleAndSpeed(backRightAngle, backRightSpeed);
+        backLeft.setAngleAndSpeed(backLeftAngle, backLeftSpeed);
         
         SmartDashboard.putNumber("x1", x1);
         SmartDashboard.putNumber("x2", x2);
