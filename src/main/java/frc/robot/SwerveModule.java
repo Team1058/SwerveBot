@@ -36,7 +36,7 @@ public class SwerveModule {
     public void setAngleAndSpeed(double angle, double speed) {
         int angleI = (int)(angle / Math.PI * 2048 + 2048 + zeroPoint);
         int current_angle = (int)(angleMotor.getSelectedSensorPosition());
-        int delta_angle = (angleI - current_angle) % 4096;
+        int delta_angle = Math.floorMod((angleI - current_angle), 4096)
         int target_angle;
         if (delta_angle <= 1024) {
             target_angle = current_angle + delta_angle;
