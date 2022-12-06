@@ -5,11 +5,14 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class SwerveModule {
     public WPI_TalonFX speedMotor;
     public WPI_TalonSRX angleMotor;
+    public String name;
     public final int angleTransform;
-    public SwerveModule (int speedMotordeviceid, int angleMotordeviceid, final int zeroAngle, boolean inverted) {
+    public SwerveModule (int speedMotordeviceid, int angleMotordeviceid, final int zeroAngle, boolean inverted, String _name) {
         speedMotor = new WPI_TalonFX(speedMotordeviceid);
         angleMotor = new WPI_TalonSRX(angleMotordeviceid);
         angleTransform = 2048 - zeroAngle;
@@ -17,6 +20,8 @@ public class SwerveModule {
         angleMotor.configFeedbackNotContinuous(false, 0);
         setPID(1, 0, 0);
         speedMotor.setInverted(inverted);
+        name = _name;
+
     }
     /**
      * Transform an angle from controller coordinates to motor coordinates
@@ -43,9 +48,10 @@ public class SwerveModule {
      * @param speed Velocity in m/s
      */
     public void setAngleAndSpeed(double angle, double speed) {
-        long targetAngle_ticks =  transformAngle(angleRadToTicks(angle)); // range of 0 to 4095
+        long inputTargetAngle_ticks = angleRadToTicks(angle); // use this to print out what angle is fed to this function in encoder ticks
+        long sensorTargetAngle_ticks =  transformAngle(angleRadToTicks(angle)); // range of 0 to 4095
         int current_angle = (int)(angleMotor.getSelectedSensorPosition()); // current position in raw sensor units
-        int delta_angle = Math.floorMod(targetAngle_ticks - current_angle, 4096); //difference between current angle and target angle
+        int delta_angle = Math.floorMod(sensorTargetAngle_ticks - current_angle, 4096); //difference between current angle and target angle
         int target_angle;
 
         if (delta_angle <= 1024) {
@@ -60,9 +66,13 @@ public class SwerveModule {
         }
         if (speed != 0) {
             angleMotor.set(ControlMode.Position, target_angle);
+            SmartDashboard.putNumber(name + " - commanded value", target_angle);
         }
     
         speedMotor.set(speed);
+
+        SmartDashboard.putNumber(name + " - target angle", inputTargetAngle_ticks);
+
     }
     public void printAngle()
     {
@@ -75,13 +85,31 @@ public class SwerveModule {
 		angleMotor.config_kI(kPIDLoopIdx, I, 0);
 		angleMotor.config_kD(kPIDLoopIdx, D, 0);
     }
-    public double getAngle() {
-        return angleMotor.getSelectedSensorPosition();
+    /**
+     * 
+     * @return The current encoder position normalised to be in range of 0 - 4095
+     */
+    public int getAngleTicks() {
+        return Math.floorMod((int)(angleMotor.getSelectedSensorPosition()), 4096);
     }
     public double getAnglePowerOutput() {
         return angleMotor.getStatorCurrent();
     }
     public double getDriveTemp() { 
         return speedMotor.getTemperature();
+    }
+    public int reverseTransformAngle(int angle) {
+        return Math.floorMod(angle + angleTransform, 4096);
+    }
+
+    public void printStats() {
+        double encoderPosition = angleMotor.getSelectedSensorPosition();
+        int normaliseAngle = reverseTransformAngle(getAngleTicks()) ;
+        double motorTemperature = getDriveTemp();
+
+        SmartDashboard.putNumber(name + " - actual commanded value", angleMotor.get());
+        SmartDashboard.putNumber(name + " - encoder position", encoderPosition);
+        SmartDashboard.putNumber(name + " - normalised angle", normaliseAngle);
+        SmartDashboard.putNumber(name + " - motor temperature", motorTemperature);
     }
 }

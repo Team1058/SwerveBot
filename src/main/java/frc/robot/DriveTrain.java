@@ -14,10 +14,10 @@ public class DriveTrain {
     public final double L = 21.5;
     public final double W = 21.5;
     public DriveTrain(){
-        frontLeft = new SwerveModule(0, 1, frontLeftStartPoint, true);
-        frontRight = new SwerveModule(2, 3, frontRightStartPoint, false);
-        backLeft = new SwerveModule(4, 5, backLeftStartPoint, true);
-        backRight = new SwerveModule(6, 7, backRightStartPoint, false);
+        frontLeft = new SwerveModule(0, 1, frontLeftStartPoint, false, "front left");
+        frontRight = new SwerveModule(2, 3, frontRightStartPoint, true, "front right");
+        backLeft = new SwerveModule(4, 5, backLeftStartPoint, false, "back left");
+        backRight = new SwerveModule(6, 7, backRightStartPoint, true, "back right");
     }
     public void drive (double x1, double y1, double x2) {
         if (Math.abs(x1)<.1){
@@ -70,17 +70,11 @@ public class DriveTrain {
 
         }
 
-    public void printAngles() {
-        SmartDashboard.putNumber("frontLeftAngle", frontLeft.getAngle());
-        SmartDashboard.putNumber("frontRightAngle", frontRight.getAngle());
-        SmartDashboard.putNumber("backLeftAngle", backLeft.getAngle());
-        SmartDashboard.putNumber("backRightAngle", backRight.getAngle());
-
-
-        SmartDashboard.putNumber("normalizeFrontLeftAngle", frontLeft.getAngle()%360);
-        SmartDashboard.putNumber("normalizeFrontRightAngle",frontRight.getAngle()%360);
-        SmartDashboard.putNumber("normalizeBackLeftAngle", backLeft.getAngle()%360);
-        SmartDashboard.putNumber("normalizeBackRightAngle", backRight.getAngle()%360);
+    public void printMotorStats() {
+        frontLeft.printStats();
+        frontRight.printStats();
+        backLeft.printStats();
+        backRight.printStats();
     }
     public void printTemp() {
         SmartDashboard.putNumber("frontLeftMotorTemp", frontLeft.getDriveTemp());
