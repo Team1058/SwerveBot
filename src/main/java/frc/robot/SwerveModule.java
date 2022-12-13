@@ -16,12 +16,12 @@ public class SwerveModule {
         speedMotor = new WPI_TalonFX(speedMotordeviceid);
         angleMotor = new WPI_TalonSRX(angleMotordeviceid);
         angleTransform = 2048 - zeroAngle;
+        angleMotor.configFactoryDefault();
         angleMotor.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
         angleMotor.configFeedbackNotContinuous(false, 0);
         setPID(1, 0, 0);
         speedMotor.setInverted(inverted);
         name = _name;
-
     }
     /**
      * Transform an angle from controller coordinates to motor coordinates
@@ -84,6 +84,7 @@ public class SwerveModule {
 		angleMotor.config_kP(kPIDLoopIdx, P, 0);
 		angleMotor.config_kI(kPIDLoopIdx, I, 0);
 		angleMotor.config_kD(kPIDLoopIdx, D, 0);
+        angleMotor.config_kF(kPIDLoopIdx, 0, 0);
     }
     /**
      * 
@@ -106,10 +107,11 @@ public class SwerveModule {
         double encoderPosition = angleMotor.getSelectedSensorPosition();
         int normaliseAngle = reverseTransformAngle(getAngleTicks()) ;
         double motorTemperature = getDriveTemp();
-
+        double error = angleMotor.getClosedLoopError();
         SmartDashboard.putNumber(name + " - actual commanded value", angleMotor.get());
         SmartDashboard.putNumber(name + " - encoder position", encoderPosition);
         SmartDashboard.putNumber(name + " - normalised angle", normaliseAngle);
         SmartDashboard.putNumber(name + " - motor temperature", motorTemperature);
+        SmartDashboard.putNumber(name + " - Error", error);
     }
 }

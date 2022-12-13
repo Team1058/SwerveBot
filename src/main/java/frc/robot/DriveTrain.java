@@ -20,15 +20,15 @@ public class DriveTrain {
         backRight = new SwerveModule(6, 7, backRightStartPoint, true, "back right");
     }
     public void drive (double x1, double y1, double x2) {
-        if (Math.abs(x1)<.1){
+        if (Math.abs(x1)<.05){
             x1 = 0;
             
         }
-        if (Math.abs(y1)<.1){
+        if (Math.abs(y1)<.05){
             y1 = 0;
             
         }
-        if (Math.abs(x2)<.1){
+        if (Math.abs(x2)<.05){
             x2 = 0;
             
         }
